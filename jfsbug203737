@@ -1,0 +1,16 @@
+---
+ fs/jfs/jfs_logmgr.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
+index 6b68df3..3cd7026 100644
+--- a/fs/jfs/jfs_logmgr.c
++++ b/fs/jfs/jfs_logmgr.c
+@@ -1223,6 +1223,7 @@ static int open_dummy_log(struct super_block *sb)
+                /* Make up some stuff */
+                dummy_log->base = 0;
+                dummy_log->size = 1024;
++               dummy_log->bdev = sb->s_bdev;
+                rc = lmLogInit(dummy_log);
+                if (rc) {
+                        kfree(dummy_log);
