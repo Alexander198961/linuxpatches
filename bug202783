@@ -1,0 +1,28 @@
+commit 8f06e08cf23d7b822f5abe41e8d84dd7e8b0f3cb
+Author: Kovtunenko Oleksandr <alexander198961@gmail.com>
+Date:   Wed May 29 05:12:48 2019 +0000
+
+    Fixed https://bugzilla.kernel.org/show_bug.cgi?id=202783
+    We can omitt SCRATCH_DEV in case we run tests on overlay fs in this case we will see this filter
+    echo "/mnt/xfstests/file1 = cap_setuid+ep" | sed -e "s,\B$SCRATCH_MNT,SCRATCH_MNT,g"  -e "s,\B$SCRATCH_DEV,SCRATCH_DEV,g"
+    but it doesn't work in case SCRATCH_DEV is empty
+
+diff --git a/common/filter b/common/filter
+index ed082d2..e3fb412 100644
+--- a/common/filter
++++ b/common/filter
+@@ -288,9 +288,13 @@ _filter_scratch()
+ {
+        # SCRATCH_DEV may be a prefix of SCRATCH_MNT (e.g. /mnt, /mnt/ovl-mnt)
+        # so substitute SCRATCH_MNT first
+-       sed -e "s,\B$SCRATCH_MNT,SCRATCH_MNT,g" \
+-           -e "s,\B$SCRATCH_DEV,SCRATCH_DEV,g" \
+-           -e "/.use_space/d"
++        if [ ! -z "$SCRATCH_DEV" ]; then
++           sed -e "s,\B$SCRATCH_MNT,SCRATCH_MNT,g" \
++               -e "s,\B$SCRATCH_DEV,SCRATCH_DEV,g" \
++               -e "/.use_space/d"
++        else
++            sed -e "s,\B$SCRATCH_MNT,SCRATCH_MNT,g" -e "/.use_space/d" 
++        fi
+ }
