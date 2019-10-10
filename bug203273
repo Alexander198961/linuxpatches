@@ -1,0 +1,21 @@
+it helps me:
+commit c8ddf31e9b5a49bc3ab768be77b9262cefd30bbc
+Author: Kovtunenko Oleksandr <alexander198961@gmail.com>
+Date:   Thu Oct 3 05:25:00 2019 +0000
+
+    revert back to allowed value in  4.19.28 linux kernel
+    Signed-off-by: Kovtunenko Oleksandr <alexander198961@gmail.com>
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a324480..fd805e3 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -4063,7 +4063,7 @@ int btrfs_balance(struct btrfs_fs_info *fs_info,
+        }
+ 
+        num_devices = btrfs_num_devices(fs_info);
+-       allowed = 0;
++       allowed = BTRFS_AVAIL_ALLOC_BIT_SINGLE | BTRFS_BLOCK_GROUP_DUP;
+        for (i = 0; i < ARRAY_SIZE(btrfs_raid_array); i++)
+                if (num_devices >= btrfs_raid_array[i].devs_min)
+                        allowed |= btrfs_raid_array[i].bg_flag;
